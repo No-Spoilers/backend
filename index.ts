@@ -1,12 +1,19 @@
 import app from "./app/lib/app"
 import logger from "./app/lib/logger"
+import mongoose from "mongoose";
 
-const port = process.env.PORT || 3000
+mongoose.connect('mongodb://localhost/no-spoilers')
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', function() {
+    logger.info(`Connected to mongodb!`)
 
-app.listen(port, (err: String) => {
-    if (err) {
-        return logger.error(err)
-    }
+    const port: Number = process.env.PORT || 3000
 
-    return logger.info(`Listening on port ${port}...`)
-})
+    app.listen(port, (err: String) => {
+        if (err) {
+            return logger.error(err)
+        }
+  
+        return logger.info(`Listening on port ${port}...`)
+    })
+});
