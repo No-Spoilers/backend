@@ -1,8 +1,10 @@
 import app from "./app/lib/app"
 import logger from "./app/lib/logger"
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-mongoose.connect('mongodb://localhost/no-spoilers')
+const connectionUri = process.env.MONGODB_URI || 'mongodb://localhost/no-spoilers'
+
+mongoose.connect(connectionUri)
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function() {
     logger.info(`Connected to mongodb!`)
