@@ -1,7 +1,11 @@
 import { Document } from "mongoose"
+import { IRevisionModel } from "./RevisionModel";
 
-export interface ItemModel extends Document {
+export interface IItemModel extends Document {
+    title: string
     parent_item?: any
-    title?: string
-    text?: string
+    slug: string
+    content?: IRevisionModel[]
+    creator?: string[]
+    methods?: any
 }

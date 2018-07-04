@@ -3,11 +3,11 @@ const FgRed = '\x1b[31m'
 const FgGreen = '\x1b[32m'
 
 namespace logger {
-  export function info (text:String): void {
+  export function info (text: string): void {
     console.log(FgGreen, `[Info] ${text}`)
   }
 
-  export function error (text: String): void {
+  export function error (text: string): void {
     console.error(FgRed, `[Error] ${text}`)
   }
 }

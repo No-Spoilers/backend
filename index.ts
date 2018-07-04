@@ -11,7 +11,7 @@ mongoose.connection.once('open', function() {
 
     const port: Number = process.env.PORT || 3000
 
-    app.listen(port, (err: String) => {
+    app.listen(port, (err: string) => {
         if (err) {
             return logger.error(err)
         }
