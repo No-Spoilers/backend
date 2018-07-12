@@ -1,9 +1,11 @@
 const endpoints: {[key: string]: string} = {
-    ENDPOINT_ROOT: '/',
-    ENDPOINT_GET_ITEM_LIST: '/items',
-    ENDPOINT_GET_ITEM: '/item/:itemId',
-    ENDPOINT_POST_ITEM: '/item',
-    ENDPOINT_PUT_ITEM: '/item/:itemId'
+    GET_ROOT: '/',
+    GET_ITEM_LIST: '/items',
+    GET_ITEM: '/item/:slug',
+    POST_ITEM: '/item',
+    PUT_ITEM: '/item/:slug',
+    POST_CONTENT: '/item/:slug',
+    POST_ADD_CHILD: '/item/add_child_to/:slug'
 }
 
 export default endpoints

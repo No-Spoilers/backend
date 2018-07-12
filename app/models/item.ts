@@ -1,18 +1,18 @@
 import { Schema, Model, model } from "mongoose";
-import { IItemModel } from "../interfaces/ItemModel";
-import { IRevisionModel } from "../interfaces/RevisionModel";
+import { IItemDocument } from "../interfaces/ItemDocument";
+import { IRevisionDocument } from "../interfaces/RevisionDocument";
 import { NewItem } from "../interfaces/NewItem";
 
 var RevisionSchema: Schema = new Schema({
     text: {
         type: String, 
-        required: true
+        default: ""
     }
 }, {
     timestamps: true
 })
 
-// const Revision: Model<IRevisionModel> = model<IRevisionModel>("Revision", RevisionSchema)
+const Revision: Model<IRevisionDocument> = model<IRevisionDocument>("Revision", RevisionSchema)
 
 export var ItemSchema: Schema = new Schema({
     title: {
@@ -31,7 +31,7 @@ export var ItemSchema: Schema = new Schema({
         type: [ RevisionSchema ],
         required: false
     },
-    parent_item: {
+    children: {
         type: [ Schema.Types.ObjectId ], 
         required: false
     }
@@ -56,11 +56,11 @@ export var ItemSchema: Schema = new Schema({
 //     return newPost.save()
 // }
 
-// ItemSchema.methods.updateItem = function (slug: string, updateText: string) {
-//     const newRevision = new Revision()
-//     newRevision.text = updateText
-//     return Item.findOneAndUpdate({slug}, {$push: {content: newRevision}})
-// }
+ItemSchema.statics.updateContent = function (slug: string, updateText: string) {
+    const newRevision = new Revision()
+    newRevision.text = updateText
+    return Item.findOneAndUpdate({slug}, {$push: {content: newRevision}}, { new:true })
+}
 
-export const Item: Model<IItemModel> = model<IItemModel>("Item", ItemSchema)
+export const Item: Model<IItemDocument> = model<IItemDocument>("Item", ItemSchema)
 

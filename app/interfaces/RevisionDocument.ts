@@ -1,5 +1,5 @@
 import { Document } from "mongoose"
 
-export interface IRevisionModel extends Document {
+export interface IRevisionDocument extends Document {
     text?: string
 }

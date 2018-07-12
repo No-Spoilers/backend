@@ -2,7 +2,7 @@ import express from 'express'
 import logger from "../lib/logger";
 import { Item } from '../models/item';
 import bodyParser from 'body-parser'
-import { IItemModel } from '../interfaces/ItemModel';
+import { IItemDocument } from '../interfaces/ItemDocument';
 import endpoints from '../config/routes';
 
 function slugify (text: string): string
@@ -17,13 +17,13 @@ function slugify (text: string): string
 
 export default (function () {
   return function (router: express.Router) {
-    router.get(endpoints.ENDPOINT_ROOT, function (req, res) {
-        logger.info(`ENDPOINT_ROOT Request received`)
+    router.get(endpoints.GET_ROOT, function (req, res) {
+        logger.info(`GET_ROOT Request received`)
         res.status(200).send(endpoints)
     })
 
-    router.get(endpoints.ENDPOINT_GET_ITEM_LIST, function (req, res) {
-        logger.info(`ENDPOINT_GET_ITEM_LIST Request received`)
+    router.get(endpoints.GET_ITEM_LIST, function (req, res) {
+        logger.info(`GET_ITEM_LIST Request received`)
         Item.find({})
             .then((findResult) => {
                 logger.info(`found: ${findResult.length} items`)
@@ -34,8 +34,8 @@ export default (function () {
             })
     })
 
-    router.get(endpoints.ENDPOINT_GET_ITEM, function (req, res) {
-        logger.info(`ENDPOINT_GET_ITEM Request received`)
+    router.get(endpoints.GET_ITEM, function (req, res) {
+        logger.info(`GET_ITEM Request received`)
         logger.info(`req.params: ${JSON.stringify(req.params)}`)
         Item.findById(req.params.itemId)
             .then((findResult) => {
@@ -47,10 +47,10 @@ export default (function () {
             })
     })
 
-    router.post(endpoints.ENDPOINT_POST_ITEM,
+    router.post(endpoints.POST_ITEM,
         bodyParser.json(),
         function (req, res) {
-            logger.info(`ENDPOINT_POST_ITEM Request received`)
+            logger.info(`POST_ITEM Request received`)
             logger.info(`req.body: ${JSON.stringify(req.body)}`)
             const newPost = new Item(req.body)
             newPost.slug = slugify(req.body.title)
@@ -65,7 +65,7 @@ export default (function () {
                 })
     })
 
-    // router.post(endpoints.ENDPOINT_PUT_ITEM,
+    // router.post(endpoints.PUT_ITEM,
     //     bodyParser.json(),
     //     function (req, res) {
     //         logger.info(`ENDPOINT_POST_ITEM Request received`)
@@ -77,6 +77,22 @@ export default (function () {
     //             res.status(201).send({err,result})
     //         })
     // })
+
+    router.post(endpoints.POST_CONTENT,
+        bodyParser.json(),
+        function (req, res) {
+            logger.info(`POST_CONTENT Request received`)
+            logger.info(`req.body: ${JSON.stringify(req.body)}`)
+            Item.updateContent(req.params.slug, req.body.text)
+                .then(updatedItem => {
+                    console.log('updatedItem:', JSON.stringify(updatedItem, null, 4))
+                    res.status(200).send(updatedItem)
+                })
+                .catch((err: any) => {
+                    logger.error(err)
+                    res.status(400).send({err})
+                })
+    })
 
     return router
 
