@@ -2,7 +2,7 @@ import express from 'express'
 import logger from "../lib/logger";
 import { Item } from '../models/item';
 import bodyParser from 'body-parser'
-import { IItemDocument } from '../interfaces/ItemDocument';
+import { ItemInterface as IItem } from '../interfaces/ItemInterface';
 import endpoints from '../config/routes';
 
 function slugify (text: string): string
@@ -84,7 +84,7 @@ export default (function () {
             logger.info(`POST_CONTENT Request received`)
             logger.info(`req.body: ${JSON.stringify(req.body)}`)
             Item.updateContent(req.params.slug, req.body.text)
-                .then(updatedItem => {
+                .then((updatedItem: IItem) => {
                     console.log('updatedItem:', JSON.stringify(updatedItem, null, 4))
                     res.status(200).send(updatedItem)
                 })

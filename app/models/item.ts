@@ -1,6 +1,6 @@
-import { Schema, Model, model } from "mongoose";
-import { IItemDocument } from "../interfaces/ItemDocument";
-import { IRevisionDocument } from "../interfaces/RevisionDocument";
+import { Schema, Model, model, Document } from "mongoose";
+import { ItemInterface as IItem } from "../interfaces/ItemInterface";
+import { RevisionInterface as IRevision } from "../interfaces/RevisionInterface";
 import { NewItem } from "../interfaces/NewItem";
 
 var RevisionSchema: Schema = new Schema({
@@ -11,8 +11,6 @@ var RevisionSchema: Schema = new Schema({
 }, {
     timestamps: true
 })
-
-const Revision: Model<IRevisionDocument> = model<IRevisionDocument>("Revision", RevisionSchema)
 
 export var ItemSchema: Schema = new Schema({
     title: {
@@ -39,28 +37,20 @@ export var ItemSchema: Schema = new Schema({
     timestamps: true
 })
 
-
-// function slugify (text: string): string
-// {
-//   return text.toString()
-//     .replace(/\s+/g, '-')           // Replace spaces with -
-//     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-//     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-//     .replace(/^-+/, '')             // Trim - from start of text
-//     .replace(/-+$/, '');            // Trim - from end of text
-// }
-
-// ItemSchema.statics.createNewItem = function (newItem: NewItem) {
-//     const newPost = new Item()
-//     newPost.slug = slugify(newItem.title)
-//     return newPost.save()
-// }
-
 ItemSchema.statics.updateContent = function (slug: string, updateText: string) {
     const newRevision = new Revision()
     newRevision.text = updateText
     return Item.findOneAndUpdate({slug}, {$push: {content: newRevision}}, { new:true })
 }
 
-export const Item: Model<IItemDocument> = model<IItemDocument>("Item", ItemSchema)
+interface itemModel extends IItem, Document {}
+interface revisionModel extends IRevision, Document {}
 
+interface itemModelStatic extends Model<itemModel> {
+    updateContent(slug: string, updateText: string): Promise<IItem>
+}
+
+const Revision = model<revisionModel>("Revision", RevisionSchema)
+
+
+export const Item = model<itemModel, itemModelStatic>("Item", ItemSchema)
