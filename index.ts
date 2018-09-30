@@ -2,9 +2,9 @@ import app from "./app/lib/app"
 import logger from "./app/lib/logger"
 import mongoose from "mongoose"
 
-const connectionUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/no-spoilers'
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/no-spoilers'
 
-mongoose.connect(connectionUri, { useNewUrlParser: true })
+mongoose.connect(mongoUri, { useNewUrlParser: true })
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function() {
     logger.info(`Connected to mongodb!`)

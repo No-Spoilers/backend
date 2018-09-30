@@ -24,6 +24,7 @@ class ExpressApp {
         logger.info('defining endpoints')
 
         router = itemRoutes(router)
+        // Add more route files here or automate
 
         this.app.use('/', router)
     }
