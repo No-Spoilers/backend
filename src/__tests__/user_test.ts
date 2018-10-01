@@ -17,7 +17,7 @@ describe('User route |', () => {
             })
     })
 
-    it('GET /users | returns a list of endpoints', async () => {
+    it('GET /users | returns a list of users', async () => {
         const fixtureUser = {
             user_name: 'Bob',
             password: 'MyPaSsWoRd',
@@ -33,7 +33,27 @@ describe('User route |', () => {
         expect(result.status).toEqual(200)
         
         expect(result.body[0].user_name).toEqual(fixtureUser.user_name)
-        expect(result.body[0].password).not.toEqual(fixtureUser.password)
+        expect(result.body[0].password).not.toBeDefined()
         expect(result.body[0].email).toEqual(fixtureUser.email)
+    })
+
+    it('GET /user/:userId | returns specified user', async () => {
+        const fixtureUser = {
+            user_name: 'Doug',
+            password: 'MyPaSsWoRd2',
+            email: 'test2@test.mail'
+        }
+        
+        const testUser = new User(fixtureUser)
+        const savedFixture = await testUser.save()
+
+        const testRoute = endpoints.GET_USER_BY_ID.replace(':userId', savedFixture._id)
+        const result = await request(app).get(testRoute)
+        
+        expect(result.status).toEqual(200)
+        
+        expect(result.body.user_name).toEqual(fixtureUser.user_name)
+        expect(result.body.password).not.toBeDefined()
+        expect(result.body.email).toEqual(fixtureUser.email)
     })
 })

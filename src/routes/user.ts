@@ -8,8 +8,8 @@ export default (function () {
     return function (router: express.Router) {
         router.get(endpoints.GET_USER_LIST, function (req, res) {
             logger.info(`GET_USER_LIST Request received`)
-            User.find({})
-                .then((findResult) => {
+            User.find({}).select('-password')
+                .then(findResult => {
                     logger.info(`found: ${findResult.length} users`)
                     res.status(200).send(findResult)
                 })
@@ -22,7 +22,7 @@ export default (function () {
         router.get(endpoints.GET_USER_BY_ID, function (req, res) {
             logger.info(`GET_USER_BY_ID Request received`)
             logger.info(`req.params: ${JSON.stringify(req.params)}`)
-            User.findById(req.params.userId)
+            User.findById(req.params.userId).select('-password')
                 .then((findResult) => {
                     logger.info(`findResult: ${JSON.stringify(findResult, null, 2)}`)
                     res.status(200).send(findResult)
