@@ -18,11 +18,13 @@ describe('User route |', () => {
     })
 
     it('GET /users | returns a list of endpoints', async () => {
-        const testUser = new User({
+        const fixtureUser = {
             user_name: 'Bob',
-            encoded_password: 'no password encoding',
+            password: 'MyPaSsWoRd',
             email: 'test@test.mail'
-        })
+        }
+        
+        const testUser = new User(fixtureUser)
     
         await testUser.save()
 
@@ -30,8 +32,8 @@ describe('User route |', () => {
         
         expect(result.status).toEqual(200)
         
-        expect(result.body[0].user_name).toEqual("Bob")
-        expect(result.body[0].encoded_password).toEqual("no password encoding")
-        expect(result.body[0].email).toEqual("test@test.mail")
+        expect(result.body[0].user_name).toEqual(fixtureUser.user_name)
+        expect(result.body[0].password).not.toEqual(fixtureUser.password)
+        expect(result.body[0].email).toEqual(fixtureUser.email)
     })
 })
