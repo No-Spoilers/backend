@@ -25,4 +25,8 @@ UserSchema.virtual('password').set(function(this: UserModel, password: string) {
     this.passwordHash = bcrypt.hashSync(password, 12);
 });
 
+UserSchema.methods.validPassword = function(password: string) {
+    return bcrypt.compareSync(password, this.passwordHash);
+};
+
 export const User: Model<UserModel> = model<UserModel>("User", UserSchema)

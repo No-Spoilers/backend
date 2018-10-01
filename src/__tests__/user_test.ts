@@ -1,7 +1,7 @@
 import request from 'supertest'
 import mongoose from 'mongoose'
 import { Mockgoose } from 'mockgoose'
-import { User } from '../models/user';
+import { User as UserModel } from '../models/user';
 
 import app from '../lib/app'
 import endpoints from '../config/routes';
@@ -24,7 +24,7 @@ describe('User route |', () => {
             email: 'test@test.mail'
         }
         
-        const testUser = new User(fixtureUser)
+        const testUser = new UserModel(fixtureUser)
     
         await testUser.save()
 
@@ -41,11 +41,11 @@ describe('User route |', () => {
     it('GET /user/:userId | returns specified user', async () => {
         const fixtureUser = {
             userName: 'Doug',
-            passwordHash: 'MyPaSsWoRd2',
+            password: 'MyPaSsWoRd2',
             email: 'test2@test.mail'
         }
         
-        const testUser = new User(fixtureUser)
+        const testUser = new UserModel(fixtureUser)
         const savedFixture = await testUser.save()
 
         const testRoute = endpoints.GET_USER_BY_ID.replace(':userId', savedFixture._id)
@@ -56,5 +56,11 @@ describe('User route |', () => {
         expect(result.body.userName).toEqual(fixtureUser.userName)
         expect(result.body.password).not.toBeDefined()
         expect(result.body.email).toEqual(fixtureUser.email)
+
+        // TEMP password testing
+        let tryMe = await testUser.validPassword('foo')
+        console.log('--> tryMe :', tryMe);
+        tryMe = await testUser.validPassword(fixtureUser.password)
+        console.log('--> tryMe :', tryMe);
     })
 })

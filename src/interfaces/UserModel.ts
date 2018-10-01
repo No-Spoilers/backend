@@ -5,4 +5,6 @@ export interface UserModel extends Document {
     passwordHash: string
     email: string
     password: string
+
+    validPassword (password: string): boolean
 }
