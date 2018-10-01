@@ -19,7 +19,7 @@ describe('User route |', () => {
 
     it('GET /users | returns a list of users', async () => {
         const fixtureUser = {
-            user_name: 'Bob',
+            userName: 'Bob',
             password: 'MyPaSsWoRd',
             email: 'test@test.mail'
         }
@@ -31,16 +31,17 @@ describe('User route |', () => {
         const result = await request(app).get(endpoints.GET_USER_LIST)
         
         expect(result.status).toEqual(200)
-        
-        expect(result.body[0].user_name).toEqual(fixtureUser.user_name)
+
+        expect(result.body[0].userName).toEqual(fixtureUser.userName)
+        expect(result.body[0].passwordHash).not.toBeDefined()
         expect(result.body[0].password).not.toBeDefined()
         expect(result.body[0].email).toEqual(fixtureUser.email)
     })
 
     it('GET /user/:userId | returns specified user', async () => {
         const fixtureUser = {
-            user_name: 'Doug',
-            password: 'MyPaSsWoRd2',
+            userName: 'Doug',
+            passwordHash: 'MyPaSsWoRd2',
             email: 'test2@test.mail'
         }
         
@@ -51,8 +52,8 @@ describe('User route |', () => {
         const result = await request(app).get(testRoute)
         
         expect(result.status).toEqual(200)
-        
-        expect(result.body.user_name).toEqual(fixtureUser.user_name)
+
+        expect(result.body.userName).toEqual(fixtureUser.userName)
         expect(result.body.password).not.toBeDefined()
         expect(result.body.email).toEqual(fixtureUser.email)
     })

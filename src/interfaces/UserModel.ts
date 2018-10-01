@@ -1,7 +1,8 @@
 import { Document } from "mongoose"
 
 export interface UserModel extends Document {
-    user_name: string
-    password: string
+    userName: string
+    passwordHash: string
     email: string
+    password: string
 }
