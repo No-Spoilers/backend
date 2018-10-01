@@ -34,10 +34,10 @@ export default (function () {
             })
     })
 
-    router.get(endpoints.GET_ITEM, function (req, res) {
-        logger.info(`GET_ITEM Request received`)
+    router.get(endpoints.GET_ITEM_BY_SLUG, function (req, res) {
+        logger.info(`GET_ITEM_BY_SLUG Request received`)
         logger.info(`req.params: ${JSON.stringify(req.params)}`)
-        Item.findById(req.params.itemId)
+        Item.findById(req.params.slug)
             .then((findResult) => {
                 logger.info(`findResult: ${JSON.stringify(findResult, null, 2)}`)
                 res.status(200).send(findResult)
