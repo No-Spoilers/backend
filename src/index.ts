@@ -1,5 +1,5 @@
-import app from "./app/lib/app"
-import logger from "./app/lib/logger"
+import app from "./lib/app"
+import logger from "./lib/logger"
 import mongoose from "mongoose"
 
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/no-spoilers'
