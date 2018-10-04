@@ -1,10 +1,12 @@
 import { Document } from "mongoose"
 
-export interface UserModel extends Document {
+export interface IUserDocument extends Document {
     userName: string
     passwordHash: string
     email: string
     password: string
+}
 
-    validPassword (password: string): boolean
+export interface IUser extends IUserDocument {
+    comparePassword(password: string): boolean; 
 }

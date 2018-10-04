@@ -1,5 +1,5 @@
 import { Schema, Model, model } from "mongoose";
-import { UserModel } from "../interfaces/UserModel";
+import { IUserDocument, IUser } from "../interfaces/UserModel";
 import bcrypt from 'bcryptjs'
 
 export var UserSchema: Schema = new Schema({
@@ -20,13 +20,13 @@ export var UserSchema: Schema = new Schema({
     timestamps: true
 })
 
-UserSchema.virtual('password').set(function(this: UserModel, password: string) {
+UserSchema.virtual('password').set(function(this: IUserDocument, password: string) {
     if (!password) throw new Error('password is a required field')
     this.passwordHash = bcrypt.hashSync(password, 12);
 });
 
-UserSchema.methods.validPassword = function(password: string) {
+UserSchema.methods.comparePassword = function(password: string) {
     return bcrypt.compareSync(password, this.passwordHash);
 };
 
-export const User: Model<UserModel> = model<UserModel>("User", UserSchema)
+export const User: Model<IUser> = model<IUser>("User", UserSchema)

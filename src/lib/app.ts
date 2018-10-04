@@ -2,6 +2,7 @@ import express from 'express'
 import logger from './logger';
 import itemRoutes from '../routes/item';
 import userRoutes from '../routes/user';
+import loginRoutes from '../routes/login';
 import catchAll from '../routes/catchAll';
 
 const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
@@ -38,6 +39,7 @@ class ExpressApp {
 
         router = itemRoutes(router)
         router = userRoutes(router)
+        router = loginRoutes(router)
         // Add more route files here or automate
         router = catchAll(router)
 

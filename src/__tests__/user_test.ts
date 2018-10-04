@@ -8,13 +8,36 @@ import endpoints from '../config/routes';
 import { doesNotThrow } from 'assert';
 
 describe('User route |', () => {
+    let mockgoose: any;
 
-    beforeAll(() => {
-        var mockgoose = new Mockgoose(mongoose)
-        return mockgoose.prepareStorage()
-            .then(() => {
-                return mongoose.connect('mongodb://localhost:27017/no-spoilers')
-            })
+    beforeAll(async () => {
+        // fix parallel tests
+        Mockgoose.prototype.prepareStorage = function() {
+            const _this = this;
+            return new Promise(function(resolve, reject) {
+            Promise.all([_this.getTempDBPath(), _this.getOpenPort()])
+            .then(([dbPath, _openPort]) => {
+                const openPort = _openPort.toString()
+                const storageEngine = _this.getMemoryStorageName()
+                const mongodArgs = ['--port', openPort, '--storageEngine', storageEngine, '--dbpath', dbPath]
+                _this.mongodHelper.mongoBin.commandArguments = mongodArgs
+                const mockConnection = () => {
+                    _this.mockConnectCalls(_this.getMockConnectionString(openPort))
+                    resolve();
+                }
+                _this.mongodHelper.run().then(mockConnection).catch(mockConnection)
+            });
+            });
+        };
+        
+        mockgoose = new Mockgoose(mongoose);
+        await mockgoose.prepareStorage()
+        return mongoose.connect('mongodb://localhost:27017/no-spoilers')
+    })
+
+    afterAll(async () => {
+        await mockgoose.helper.reset();
+        return mongoose.disconnect();
     })
 
     it('GET /users | returns a list of users', async () => {
@@ -36,6 +59,7 @@ describe('User route |', () => {
         expect(result.body[0].passwordHash).not.toBeDefined()
         expect(result.body[0].password).not.toBeDefined()
         expect(result.body[0].email).toEqual(fixtureUser.email)
+        return
     })
 
     it('GET /user/:userId | returns specified user', async () => {
@@ -56,11 +80,6 @@ describe('User route |', () => {
         expect(result.body.userName).toEqual(fixtureUser.userName)
         expect(result.body.password).not.toBeDefined()
         expect(result.body.email).toEqual(fixtureUser.email)
-
-        // TEMP password testing
-        let tryMe = await testUser.validPassword('foo')
-        console.log('--> tryMe :', tryMe);
-        tryMe = await testUser.validPassword(fixtureUser.password)
-        console.log('--> tryMe :', tryMe);
+        return
     })
 })
