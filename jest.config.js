@@ -13,5 +13,8 @@ module.exports = {
     'jsx',
     'json',
     'node'
+  ],
+  'testPathIgnorePatterns': [
+    'utils.ts'
   ]
 }
