@@ -1,4 +1,5 @@
 import request from 'supertest'
+import uuidv4 from 'uuid/v4'
 
 import { connectMongoose, disconnectMongoose, clearDatabase } from './utils';
 import app from '../lib/app'
@@ -11,7 +12,10 @@ describe('User route |', () => {
     afterAll(disconnectMongoose);
 
     it('GET /users | returns a list of users', async () => {
+        const userId = uuidv4()
+
         const fixtureUser = {
+            userId,
             userName: 'Bob',
             password: 'MyPaSsWoRd',
             email: 'test@test.mail'
@@ -31,7 +35,10 @@ describe('User route |', () => {
     })
 
     it('GET /user/:userId | returns specified user', async () => {
+        const userId = uuidv4()
+
         const fixtureUser = {
+            userId,
             userName: 'Doug',
             password: 'MyPaSsWoRd2',
             email: 'test2@test.mail'
@@ -48,5 +55,24 @@ describe('User route |', () => {
         expect(result.body.userName).toEqual(fixtureUser.userName)
         expect(result.body.password).not.toBeDefined()
         expect(result.body.email).toEqual(fixtureUser.email)
+    })
+
+    it('POST /user | creates new user in DB', async () => {
+        const fixtureUser = {
+            userName: 'Doug',
+            password: 'MyPaSsWoRd2',
+            email: 'test2@test.mail'
+        }
+
+        const testRoute = endpoints.POST_USER
+        const res = await request(app).post(testRoute).send(fixtureUser)
+
+        expect(res.status).toEqual(201)
+
+        expect(res.body.password).not.toBeDefined()
+        expect(res.body.userName).toEqual(fixtureUser.userName)
+        expect(res.body.email).toEqual(fixtureUser.email)
+        expect(res.body).toHaveProperty('userId')
+        expect(res.body).toHaveProperty('createdAt')
     })
 })

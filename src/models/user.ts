@@ -3,6 +3,10 @@ import { IUserDocument, IUser } from "../interfaces/UserModel";
 import bcrypt from 'bcryptjs'
 
 export var UserSchema: Schema = new Schema({
+    userId: {
+        type: String, //uuid
+        required: true
+    },
     userName: {
         type: String, 
         required: true,
