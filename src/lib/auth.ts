@@ -2,17 +2,6 @@ import Express from 'express'
 import jwt from 'jsonwebtoken';
 import logger from './logger';
 
-declare global {
-    namespace Express {
-        interface Request {
-            token: {
-                userId?: string | object
-                verified?: boolean
-            }
-        }
-    }
-}
-
 function getTokenSecret () {
     if (process.env.NODE_ENV === 'test') return 'test-secret'
     if (process.env.TOKEN_SECRET) return process.env.TOKEN_SECRET
@@ -20,6 +9,9 @@ function getTokenSecret () {
 }
 
 function tokenCheck (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
+    req.token = {
+        verified: false
+    }
     if (req.headers.authorization) {
         const [bearer, token] = req.headers.authorization.split(' ')
         if (bearer === 'Bearer') {
@@ -31,10 +23,7 @@ function tokenCheck (req: Express.Request, res: Express.Response, next: Express.
                 }
             }
             catch (error) {
-                logger.info(`Token check failed: ${error}`)
-                req.token = {
-                    verified: false
-                }
+                logger.info(`Token check failed: ${error}`, req)
             } 
         }
     }

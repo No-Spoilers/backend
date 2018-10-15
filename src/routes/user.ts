@@ -12,7 +12,7 @@ export default function setupRoutes (router: express.Router) {
         endpoints.GET_USER_LIST,
         auth.tokenCheck,
         async function getUserListEndpoint (req, res) {
-            logger.info(`GET_USER_LIST Request received`)
+            logger.info(`GET_USER_LIST Request received`, req)
             if (!req.token.verified) {
                 return res.status(400).send()
             }
@@ -34,12 +34,11 @@ export default function setupRoutes (router: express.Router) {
         endpoints.GET_USER_BY_ID, 
         auth.tokenCheck,
         async function getUserByIdEndpoint (req, res) {
-            logger.info(`GET_USER_BY_ID Request received`)
+            logger.info(`GET_USER_BY_ID Request received`, req)
             if (!req.token || !req.token.verified) {
                 return res.status(400).send()
             }
             try {
-                logger.info('passed verification in GET_USER_BY_ID')
                 const findResult = await UserModel
                     .findOne({userId: req.params.userId})
                     .select('-passwordHash')
@@ -56,7 +55,7 @@ export default function setupRoutes (router: express.Router) {
     router.post(endpoints.POST_USER,
         bodyParser.json(),
         async function postUserEndpoint (req, res) {
-            logger.info(`POST_USER Request received`)
+            logger.info(`POST_USER Request received`, req)
             logger.info(`req.body: ${JSON.stringify(req.body)}`)
             const newUserId = uuidv4()
 

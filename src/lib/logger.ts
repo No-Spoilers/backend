@@ -2,17 +2,22 @@
 const FgRed = '\x1b[31m'
 const FgGreen = '\x1b[32m'
 
-namespace logger {
-    export function info (text: string): void {
-        if (process.env.NODE_LOGGER_CONSOLE =='true' || process.env.NODE_ENV !== 'test') {
-            console.log(FgGreen, `[Info] ${text}`)
+function output(consoleFn: any, color: string, text: string, req?: Express.Request) {
+    if (process.env.NODE_LOGGER_CONSOLE =='true' || process.env.NODE_ENV !== 'test') {
+        if (req) {
+            text += ` | params: ${JSON.stringify(req.params)} | token: ${JSON.stringify(req.token)}`
         }
+        consoleFn(color, text)
+    }
+}
+
+namespace logger {
+    export function info (text: string, req?: Express.Request): void {
+        output(console.log, FgGreen, text, req)
     }
 
-    export function error (text: string): void {
-        if (process.env.NODE_LOGGER_CONSOLE =='true' || process.env.NODE_ENV !== 'test') {
-            console.error(FgRed, `[Error] ${text}`)
-        }
+    export function error (text: string, req?: Express.Request): void {
+        output(console.error, FgRed, text, req)
     }
 }
 
