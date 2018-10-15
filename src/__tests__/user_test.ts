@@ -1,67 +1,54 @@
 import request from 'supertest'
 import uuidv4 from 'uuid/v4'
 
-import { connectMongoose, disconnectMongoose, clearDatabase } from './utils';
+import utils from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes';
 import { User as UserModel } from '../models/user';
+import { IUser } from '../interfaces/UserModel'
+import logger from '../lib/logger';
 
 describe('User route |', () => {
-    beforeAll(connectMongoose);
-    beforeEach(clearDatabase);
-    afterAll(disconnectMongoose);
+    beforeAll(utils.connectMongoose);
+    beforeEach(utils.clearDatabase);
+    afterAll(utils.disconnectMongoose);
 
     it('GET /users | returns a list of users', async () => {
-        const userId = uuidv4()
-
-        const fixtureUser = {
-            userId,
-            userName: 'Bob',
-            password: 'MyPaSsWoRd',
-            email: 'test@test.mail'
-        }
-        
-        const testUser = new UserModel(fixtureUser)
-        await testUser.save()
-
-        const result = await request(app).get(endpoints.GET_USER_LIST)
+        const token = utils.getAdminToken()
+        const result = await request(app)
+            .get(endpoints.GET_USER_LIST)
+            .set({authorization: `Bearer ${token}`})
         
         expect(result.status).toEqual(200)
 
-        expect(result.body[0].userName).toEqual(fixtureUser.userName)
-        expect(result.body[0].passwordHash).not.toBeDefined()
-        expect(result.body[0].password).not.toBeDefined()
-        expect(result.body[0].email).toEqual(fixtureUser.email)
+        const adminIndex = result.body.findIndex((item: IUser) => item.userName === 'Admin User')
+        expect(result.body[adminIndex].userName).toEqual('Admin User')
+        expect(result.body[adminIndex].passwordHash).not.toBeDefined()
+        expect(result.body[adminIndex].password).not.toBeDefined()
+        expect(result.body[adminIndex].email).toEqual('admin@user.mail')
     })
 
     it('GET /user/:userId | returns specified user', async () => {
-        const userId = uuidv4()
+        const userId = utils.getStandardUserId()
+        const token = utils.getStandardToken()
 
-        const fixtureUser = {
-            userId,
-            userName: 'Doug',
-            password: 'MyPaSsWoRd2',
-            email: 'test2@test.mail'
-        }
-
-        const testUser = new UserModel(fixtureUser)
-        const savedUser = await testUser.save()
-
-        const testRoute = endpoints.GET_USER_BY_ID.replace(':userId', savedUser._id)
-        const result = await request(app).get(testRoute)
+        const testRoute = endpoints.GET_USER_BY_ID.replace(':userId', userId)
+        const result = await request(app)
+            .get(testRoute)
+            .set({authorization: `Bearer ${token}`})
         
         expect(result.status).toEqual(200)
 
-        expect(result.body.userName).toEqual(fixtureUser.userName)
+        expect(result.body.userName).toEqual('Standard User')
         expect(result.body.password).not.toBeDefined()
-        expect(result.body.email).toEqual(fixtureUser.email)
+        expect(result.body.email).toEqual('standard@user.mail')
     })
 
     it('POST /user | creates new user in DB', async () => {
         const fixtureUser = {
-            userName: 'Doug',
-            password: 'MyPaSsWoRd2',
-            email: 'test2@test.mail'
+            userName: 'New User',
+            password: 'MyPaSsWoRd',
+            email: 'new_user@test.mail'
         }
 
         const testRoute = endpoints.POST_USER

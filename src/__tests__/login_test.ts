@@ -13,20 +13,8 @@ describe('Login route |', () => {
     afterAll(disconnectMongoose);
     
     it('POST /login | returns a token when successful', async () => {
-        const userId = uuidv4()
-
-        const fixtureUser = {
-            userId,
-            userName: 'Bob',
-            password: 'MyPaSsWoRd',
-            email: 'test@test.mail'
-        }
-        
-        const testUser = new UserModel(fixtureUser)
-        await testUser.save()
-        
         const res = await request(app).post(endpoints.POST_LOGIN)
-            .send({ userName: fixtureUser.userName, password: fixtureUser.password})
+            .send({ userName: 'Standard User', password: 'standard user password'})
         
         expect(res.status).toEqual(200)
         expect(res.body).toHaveProperty('token')

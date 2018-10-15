@@ -3,13 +3,7 @@ import logger from "../lib/logger";
 import { User as UserModel } from '../models/user';
 import bodyParser from 'body-parser'
 import endpoints from '../config/routes';
-import jwt from 'jsonwebtoken';
-
-function getTokenSecret () {
-    if (process.env.NODE_ENV === 'test') return 'test-secret'
-    if (process.env.TOKEN_SECRET) return process.env.TOKEN_SECRET
-    throw new Error('Token Secret missing!')
-}
+import auth from '../lib/auth';
 
 export default function setupRoutes (router: express.Router) {
     router.post(
@@ -19,6 +13,7 @@ export default function setupRoutes (router: express.Router) {
             try {
                 logger.info(`POST_LOGIN Request received`)
                 logger.info(`req.body: ${JSON.stringify(req.body)}`)
+
                 const userFound = await UserModel.findOne({userName: req.body.userName})
                 if (!userFound) {
                     return res.status(401).send();
@@ -27,7 +22,7 @@ export default function setupRoutes (router: express.Router) {
                 if (!userFound.comparePassword(req.body.password)) {
                     return res.status(401).send();
                 }
-                const token = jwt.sign(userFound.userId, getTokenSecret());
+                const token = auth.createToken(userFound.userId);
         
                 return res.status(200).send({token})
             } catch(error) {
