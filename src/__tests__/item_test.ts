@@ -2,7 +2,8 @@ import request from 'supertest'
 import utils from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes';
-import { IUser } from '../interfaces/UserModel'
+import { ItemModel } from '../models/item';
+import { IRevision } from '../interfaces/ItemInterface';
 
 describe('Item route |', () => {
     beforeAll(utils.connectMongoose);
@@ -58,7 +59,6 @@ describe('Item route |', () => {
             "__v": 0
         }
         expect(result.body).toEqual(expectedResult)
-
     })
 
     it('POST /item | creates new item in DB', async () => {
@@ -77,7 +77,44 @@ describe('Item route |', () => {
         expect(res.body.slug).toEqual(fixtureItem.slug)
         expect(res.body.content).toEqual([])
         expect(res.body.children).toEqual([])
-        expect(res.body.creator.length).toEqual(2)
+        expect(res.body.creator).toEqual(fixtureItem.creator)
         expect(res.body).toHaveProperty('createdAt')
+    })
+
+    it('POST /item/:slug | adds content to an item', async () => {
+        const fixtures = await ItemModel.find()
+
+        const slug = 'my-title'
+        const newContent = {
+          text: `Here's a line of content`
+        }
+
+        const testRoute = endpoints.POST_CONTENT.replace(':slug', slug)
+        let res = await request(app).post(testRoute).send(newContent)
+
+        expect(res.status).toEqual(201)
+
+        expect(res.body.content[0].text).toEqual(newContent.text)
+        expect(res.body.content[0]).toHaveProperty('_id')
+        expect(res.body.content[0]).toHaveProperty('updatedAt')
+        expect(res.body.content[0]).toHaveProperty('createdAt')
+        
+        const updatedContent = {
+            text: `Here's an updated line of content`
+        }
+  
+        res = await request(app).post(testRoute).send(updatedContent)
+
+        expect(res.body.content.length).toEqual(2)
+        const firstResult = res.body.content.findIndex((item:IRevision) => item.text === newContent.text)
+        const secondResult = res.body.content.findIndex((item:IRevision) => item.text === updatedContent.text)
+        expect(res.body.content[firstResult].text).toEqual(newContent.text)
+        expect(res.body.content[firstResult]).toHaveProperty('_id')
+        expect(res.body.content[firstResult]).toHaveProperty('updatedAt')
+        expect(res.body.content[firstResult]).toHaveProperty('createdAt')
+        expect(res.body.content[secondResult].text).toEqual(updatedContent.text)
+        expect(res.body.content[secondResult]).toHaveProperty('_id')
+        expect(res.body.content[secondResult]).toHaveProperty('updatedAt')
+        expect(res.body.content[secondResult]).toHaveProperty('createdAt')
     })
 })
