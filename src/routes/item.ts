@@ -1,6 +1,6 @@
 import express from 'express'
 import logger from "../lib/logger";
-import { Item } from '../models/item';
+import ItemModel from '../models/item';
 import bodyParser from 'body-parser'
 import endpoints from '../config/routes';
 import auth from '../lib/auth';
@@ -23,7 +23,7 @@ export default function setupItemRoutes (router: express.Router) {
         async function getItemListEndpoint (req, res) {
             logger.info(`GET_ITEM_LIST Request received`)
             try {
-                const findResult = await Item.find({});
+                const findResult = await ItemModel.find({});
                 logger.info(`found: ${findResult.length} items`, req);
                 return res.status(200).send(findResult);
             }
@@ -38,7 +38,7 @@ export default function setupItemRoutes (router: express.Router) {
         async function getItemBySlug (req, res) {
             logger.info(`GET_ITEM_BY_SLUG Request received`, req)
             try {
-                const findResult = await Item.findOne({slug: req.params.slug});
+                const findResult = await ItemModel.findOne({slug: req.params.slug});
                 logger.info(`findResult: ${JSON.stringify(findResult, null, 2)}`);
                 return res.status(200).send(findResult);
             }
@@ -52,7 +52,7 @@ export default function setupItemRoutes (router: express.Router) {
         auth.tokenCheck,
         async function postItemEndpoint (req, res) {
             logger.info(`POST_ITEM Request received | req.body: ${JSON.stringify(req.body)}`, req)
-            const newPost = new Item(req.body)
+            const newPost = new ItemModel(req.body)
             newPost.slug = slug.create(req.body.title)
             try {
                 const result = await newPost.save();
@@ -72,9 +72,9 @@ export default function setupItemRoutes (router: express.Router) {
         async function postContentEndpoint (req, res) {
             logger.info(`POST_CONTENT Request received | req.body: ${JSON.stringify(req.body)}`, req)
             try {
-                const updatedItem = await Item.updateContent(req.params.slug, req.body.text);
-                console.log('Update item result:', JSON.stringify(updatedItem, null, 4));
-                return res.status(200).send(updatedItem);
+                const updatedItem = await ItemModel.updateContent(req.params.slug, req.body.text);
+                logger.info(`Update ItemModel result: ${JSON.stringify(updatedItem)}`);
+                return res.status(201).send(updatedItem);
             }
             catch (err) {
                 logger.error(err);

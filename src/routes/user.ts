@@ -4,7 +4,7 @@ import uuidv4 from 'uuid/v4'
 
 import logger from "../lib/logger"
 import auth from "../lib/auth"
-import { User as UserModel } from '../models/user'
+import UserModel from '../models/user'
 import endpoints from '../config/routes'
 
 export default function setupRoutes (router: express.Router) {

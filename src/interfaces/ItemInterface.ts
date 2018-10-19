@@ -1,9 +1,23 @@
-import { RevisionInterface } from "./RevisionInterface";
+import { Document, Model } from "mongoose"
 
-export interface ItemInterface {
+export interface IRevision extends Document {
+    text?: string
+}
+
+export interface IItem extends Document {
     title: string
     children?: any
     slug: string
-    content?: RevisionInterface[]
+    content?: IRevision[]
     creator?: string[]
+
+    // properties and instance methods go here
 }
+
+export interface IItemModel extends Model<IItem> {
+    updateContent(slug: string, updateText: string): Promise<IItem>
+
+    // static methods go here
+}
+
+// Compare to IUser if changing

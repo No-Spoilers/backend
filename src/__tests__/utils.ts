@@ -3,8 +3,8 @@ import MongodbMemoryServer from 'mongodb-memory-server'
 import jwt from 'jsonwebtoken'
 import uuidv4 from 'uuid/v4'
 
-import { User as UserModel } from '../models/user'
-import { Item as ItemModel } from '../models/item'
+import UserModel from '../models/user'
+import ItemModel from '../models/item'
 import * as fixtures from './fixtures'
 
 let mongoMemoryDB: MongodbMemoryServer

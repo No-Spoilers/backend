@@ -2,7 +2,7 @@ import request from 'supertest'
 import utils from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes';
-import { IUser } from '../interfaces/UserModel'
+import { IUser } from '../interfaces/UserInterface'
 
 describe('User route |', () => {
     beforeAll(utils.connectMongoose);

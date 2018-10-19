@@ -1,6 +1,6 @@
 import { Document } from "mongoose"
 
-export interface IUserDocument extends Document {
+export interface IUser extends Document {
     userId: string
     userName: string
     passwordHash: string
@@ -8,8 +8,8 @@ export interface IUserDocument extends Document {
     password: string
     createdAt: string
     updatedAt: string
-}
-
-export interface IUser extends IUserDocument {
+    
     comparePassword(password: string): boolean; 
 }
+
+// Compare to IItem if changing

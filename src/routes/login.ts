@@ -1,6 +1,6 @@
 import express from 'express'
 import logger from "../lib/logger";
-import { User as UserModel } from '../models/user';
+import UserModel from '../models/user';
 import bodyParser from 'body-parser'
 import endpoints from '../config/routes';
 import auth from '../lib/auth';

@@ -1,7 +1,5 @@
-import { Schema, Model, model, Document } from "mongoose";
-import { ItemInterface as IItem } from "../interfaces/ItemInterface";
-import { RevisionInterface as IRevision } from "../interfaces/RevisionInterface";
-import { NewItem } from "../interfaces/NewItem";
+import { Schema, model } from "mongoose";
+import { IItem, IRevision, IItemModel } from "../interfaces/ItemInterface";
 
 var RevisionSchema: Schema = new Schema({
     text: {
@@ -37,20 +35,14 @@ export var ItemSchema: Schema = new Schema({
     timestamps: true
 })
 
+const Revision = model<IRevision>("Revision", RevisionSchema)
+
 ItemSchema.statics.updateContent = function (slug: string, updateText: string) {
     const newRevision = new Revision()
     newRevision.text = updateText
-    return Item.findOneAndUpdate({slug}, {$push: {content: newRevision}}, { new:true })
+    return ItemModel.findOneAndUpdate({slug}, {$push: {content: newRevision}}, { new: true })
 }
 
-interface itemModel extends IItem, Document {}
-interface revisionModel extends IRevision, Document {}
+export const ItemModel: IItemModel = model<IItem, IItemModel>("Item", ItemSchema)
 
-interface itemModelStatic extends Model<itemModel> {
-    updateContent(slug: string, updateText: string): Promise<IItem>
-}
-
-const Revision = model<revisionModel>("Revision", RevisionSchema)
-
-
-export const Item = model<itemModel, itemModelStatic>("Item", ItemSchema)
+export default ItemModel
