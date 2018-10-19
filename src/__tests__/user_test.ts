@@ -1,12 +1,8 @@
 import request from 'supertest'
-import uuidv4 from 'uuid/v4'
-
 import utils from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes';
-import { User as UserModel } from '../models/user';
 import { IUser } from '../interfaces/UserModel'
-import logger from '../lib/logger';
 
 describe('User route |', () => {
     beforeAll(utils.connectMongoose);
@@ -36,7 +32,7 @@ describe('User route |', () => {
         const result = await request(app)
             .get(testRoute)
             .set({authorization: `Bearer ${token}`})
-        
+
         expect(result.status).toEqual(200)
 
         expect(result.body.userName).toEqual('Standard User')

@@ -4,16 +4,8 @@ import { Item } from '../models/item';
 import bodyParser from 'body-parser'
 import endpoints from '../config/routes';
 import auth from '../lib/auth';
+import slug from '../lib/slug';
 
-function slugify (text: string): string
-{
-    return text.toString()
-        .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-        .replace(/^-+/, '')             // Trim - from start of text
-        .replace(/-+$/, '');            // Trim - from end of text
-}
 
 export default function setupItemRoutes (router: express.Router) {
     router.get(
@@ -46,7 +38,7 @@ export default function setupItemRoutes (router: express.Router) {
         async function getItemBySlug (req, res) {
             logger.info(`GET_ITEM_BY_SLUG Request received`, req)
             try {
-                const findResult = await Item.findById(req.params.slug);
+                const findResult = await Item.findOne({slug: req.params.slug});
                 logger.info(`findResult: ${JSON.stringify(findResult, null, 2)}`);
                 return res.status(200).send(findResult);
             }
@@ -61,11 +53,11 @@ export default function setupItemRoutes (router: express.Router) {
         async function postItemEndpoint (req, res) {
             logger.info(`POST_ITEM Request received | req.body: ${JSON.stringify(req.body)}`, req)
             const newPost = new Item(req.body)
-            newPost.slug = slugify(req.body.title)
+            newPost.slug = slug.create(req.body.title)
             try {
                 const result = await newPost.save();
                 logger.info(`Item create result: ${JSON.stringify(result, null, 2)}`);
-                res.status(201).send({ result });
+                res.status(201).send(result);
             }
             catch (err) {
                 logger.error(err);

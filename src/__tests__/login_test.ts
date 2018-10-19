@@ -1,11 +1,8 @@
 import request from 'supertest'
 import jwt from 'jsonwebtoken';
-import uuidv4 from 'uuid/v4'
-
-import { connectMongoose, disconnectMongoose, clearDatabase } from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes'
-import { User as UserModel } from '../models/user'
+import { connectMongoose, disconnectMongoose, clearDatabase } from './utils';
 
 describe('Login route |', () => {
     beforeAll(connectMongoose);
