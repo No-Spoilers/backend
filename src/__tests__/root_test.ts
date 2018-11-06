@@ -9,6 +9,7 @@ describe('Root route |', () => {
         expect(result.body).toEqual({
             "GET_ROOT": "/",
             "POST_LOGIN": "/login",
+            "POST_SIGNUP": "/signup",
             "GET_ITEM_LIST": "/items",
             "GET_ITEM_BY_SLUG": "/item/:slug",
             "POST_ITEM": "/item",

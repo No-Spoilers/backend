@@ -2,7 +2,6 @@ import request from 'supertest'
 import utils from './utils';
 import app from '../lib/app'
 import endpoints from '../config/routes';
-import { ItemModel } from '../models/item';
 import { IRevision } from '../interfaces/ItemInterface';
 
 describe('Item route |', () => {
@@ -82,8 +81,6 @@ describe('Item route |', () => {
     })
 
     it('POST /item/:slug | adds content to an item', async () => {
-        const fixtures = await ItemModel.find()
-
         const slug = 'my-title'
         const newContent = {
           text: `Here's a line of content`
