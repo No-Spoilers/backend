@@ -36,7 +36,7 @@ class ExpressApp {
 
     private mountRoutes (): void {
         let router: express.Router = express.Router()
-        logger.info('defining endpoints')
+        logger.info('STARTUP: Defining endpoints')
 
         router = itemRoutes(router)
         router = userRoutes(router)

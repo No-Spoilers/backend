@@ -8,15 +8,15 @@ mongoose.connect(mongoUri, { useNewUrlParser: true })
 mongoose.set('useCreateIndex', true); // silences a warning, sigh
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function() {
-    logger.info(`Connected to mongodb!`)
+    logger.info(`STARTUP: Connected to database`)
     
-    const port: Number = Number(process.env.PORT) || 3000
+    const port: Number = Number(process.env.PORT) || 4000
     
     app.listen(port, (err: string) => {
         if (err) {
             return logger.error(err)
         }
         
-        return logger.info(`Listening on port ${port}...`)
+        return logger.info(`STARTUP: Listening on port ${port}`)
     })
 });

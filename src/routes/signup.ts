@@ -25,12 +25,15 @@ export default function setupRoutes (router: express.Router) {
 
                 const userFound = await UserModel.findOne({$or: [{email: newUser.email}, {userName: newUser.userName} ]})
                 if (userFound) {
-                    return res.status(400).send({error:'User name or email address already taken'});
+                    return res.status(400).send({error:'User name or email address already taken'})
                 }
 
                 newUser.userId = uuidv4();
                 await UserModel.create(newUser);
-                return res.status(201).send({msg: `User ${newUser.userName} created`})
+
+                const msg = `User "${newUser.userName}" created.`
+                const logId = logger.info(msg)
+                return res.status(201).send({msg, logId})
             } catch (error) {
                 const errorId = logger.error(error)
                 return res.status(500).send({error: `Unexpected error. Please see log ${errorId}`})
