@@ -5,7 +5,7 @@ import { connectMongoose, disconnectMongoose, clearDatabase } from './utils'
 import UserModel from '../models/user'
 import jwt from 'jsonwebtoken';
 
-describe('Login route |', () => {
+describe('Signup route |', () => {
     beforeAll(connectMongoose)
     beforeEach(clearDatabase)
     afterAll(disconnectMongoose)
