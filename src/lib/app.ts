@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import logger from './logger';
 import itemRoutes from '../routes/item';
 import userRoutes from '../routes/user';
@@ -23,6 +24,7 @@ class ExpressApp {
 
     constructor () {
         this.app = express()
+        this.app.use(cors())
         this.mountRoutes()
     }
 
