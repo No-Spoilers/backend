@@ -25,7 +25,10 @@ export default function setupRoutes (router: express.Router) {
 
                 const userFound = await UserModel.findOne({$or: [{email: newUser.email}, {userName: newUser.userName} ]})
                 if (userFound) {
-                    return res.status(400).send({error:'User name or email address already taken'})
+                    const msg = 'User name or email address already taken'
+                    const success = false
+                    const logId = logger.info(msg)
+                    return res.status(200).send({msg, success, logId})
                 }
 
                 newUser.userId = uuidv4();

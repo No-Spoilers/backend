@@ -41,7 +41,7 @@ describe('Login route |', () => {
         expect(verified).toEqual(newUserId)
     })
 
-    it('POST /signup | returns 400 when user already exists', async () => {
+    it('POST /signup | returns 200 when user already exists', async () => {
         const newUser = {
             email: 'standard@user.mail',
             userName: 'Standard User',
@@ -50,6 +50,8 @@ describe('Login route |', () => {
 
         const res = await request(app).post(endpoints.POST_SIGNUP).send(newUser)
     
-        expect(res.status).toEqual(400)
+        expect(res.status).toEqual(200)
+        expect(res.body.msg).toEqual("User name or email address already taken")
+        expect(res.body.success).toEqual(false)
     })
 })
