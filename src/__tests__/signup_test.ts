@@ -20,6 +20,7 @@ describe('Login route |', () => {
         const res = await request(app).post(endpoints.POST_SIGNUP).send(newUser)
     
         expect(res.status).toEqual(201)
+        expect(res.body.success).toEqual(true)
 
         const foundUser = await UserModel.find({"email": "new@email.com"})
 

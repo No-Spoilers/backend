@@ -32,8 +32,9 @@ export default function setupRoutes (router: express.Router) {
                 await UserModel.create(newUser);
 
                 const msg = `User "${newUser.userName}" created.`
+                const success = true
                 const logId = logger.info(msg)
-                return res.status(201).send({msg, logId})
+                return res.status(201).send({msg, success, logId})
             } catch (error) {
                 const errorId = logger.error(error)
                 return res.status(500).send({error: `Unexpected error. Please see log ${errorId}`})
