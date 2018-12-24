@@ -5,7 +5,7 @@ import logger from './logger';
 function getTokenSecret () {
     if (process.env.NODE_ENV === 'test') return 'test-secret'
     if (process.env.TOKEN_SECRET) return process.env.TOKEN_SECRET
-    throw new Error('Token Secret missing!')
+    throw new Error('process.env.TOKEN_SECRET missing!')
 }
 
 function tokenCheck (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
