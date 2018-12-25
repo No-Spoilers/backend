@@ -11,10 +11,11 @@ describe('Login route |', () => {
     
     it('POST /login | returns a token when successful', async () => {
         const res = await request(app).post(endpoints.POST_LOGIN)
-            .send({ userName: 'Standard User', password: 'standard user password'})
+            .send({ email: 'standard@user.mail', password: 'standard user password'})
         
         expect(res.status).toEqual(200)
         expect(res.body).toHaveProperty('token')
+        expect(res.body).toHaveProperty('userId')
         const verified = jwt.verify(res.body.token, 'test-secret')
         expect(verified).toEqual(expect.stringMatching(/^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i))
         try {

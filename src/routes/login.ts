@@ -14,20 +14,34 @@ export default function setupRoutes (router: express.Router) {
                 logger.info(`POST_LOGIN Request received`)
                 logger.info(`req.body: ${JSON.stringify(req.body)}`)
 
-                const userFound = await UserModel.findOne({userName: req.body.userName})
-                if (!userFound) {
-                    return res.status(401).send();
+                const userResult = await UserModel.findOne({email: req.body.email})
+                
+                if (!userResult) {
+                    const msg = 'User not found or wrong password.' //obfuscate problem
+                    const logId = logger.info(msg)
+                    return res.status(200).send({msg, logId})
                 }
-                logger.info(`User find result: ${JSON.stringify(userFound, null, 2)}`)
-                if (!userFound.comparePassword(req.body.password)) {
-                    return res.status(401).send();
+                
+                logger.info(`User find result: ${JSON.stringify(userResult)}`)
+                
+                if (!userResult.comparePassword(req.body.password)) {
+                    const msg = 'User not found or wrong password.' //obfuscate problem
+                    const logId = logger.info(msg)
+                    return res.status(200).send({msg, logId})
                 }
-                const token = auth.createToken(userFound.userId);
-        
-                return res.status(200).send({token})
+
+                const userData = userResult.toObject()
+
+                delete userData.passwordHash
+                delete userData.__v
+                delete userData._id
+
+                const token = auth.createToken(userData.userId);
+                
+                return res.status(200).send({token, ...userData})
             } catch(error) {
-                logger.error(error)
-                return res.status(400).send({error})
+                const logId = logger.error(error)
+                return res.status(500).send({msg:'Unexpected server error.', logId})
             }
         }
     )

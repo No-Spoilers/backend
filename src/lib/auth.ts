@@ -17,6 +17,7 @@ function tokenCheck (req: Express.Request, res: Express.Response, next: Express.
         if (bearer === 'Bearer') {
             try {
                 const verifiedData = jwt.verify(token, getTokenSecret())
+                logger.info(`Token verified for userId: ${verifiedData}`)
                 req.token = {
                     verified: true,
                     userId: verifiedData

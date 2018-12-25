@@ -32,7 +32,7 @@ describe('Signup route |', () => {
         const newUserId = foundUser[0].userId;
 
         const res2 = await request(app).post(endpoints.POST_LOGIN)
-            .send({ userName: 'New User', password: 'new user password'})
+            .send({ email: "new@email.com", password: 'new user password'})
     
         expect(res2.status).toEqual(200)
         expect(res2.body).toHaveProperty('token')
