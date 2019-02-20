@@ -4,6 +4,7 @@ module.exports = {
         "jest": true
     },
     "rules": {
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "no-trailing-spaces": "error"
     }
 }

@@ -15,7 +15,8 @@
     "build": "tsc",
     "dev": "tsc --watch & nodemon dist",
     "test": "export NODE_ENV=test && jest",
-    "test-watch": "jest --watch"
+    "test-watch": "jest --watch",
+    "lint": "eslint ."
   },
   "author": "Geoffrey Emerson",
   "license": "UNLICENSED",
