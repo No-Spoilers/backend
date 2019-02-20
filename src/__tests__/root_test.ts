@@ -11,6 +11,7 @@ describe('Root route |', () => {
             "POST_LOGIN": "/login",
             "POST_SIGNUP": "/signup",
             "GET_ITEM_LIST": "/items",
+            "GET_ITEMS_LATEST": "/items/latest",
             "GET_ITEM_BY_SLUG": "/item/:slug",
             "POST_ITEM": "/item",
             "PUT_ITEM": "/item/:slug",

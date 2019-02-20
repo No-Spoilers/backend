@@ -82,5 +82,20 @@ export default function setupItemRoutes (router: express.Router) {
             }
     })
 
+    router.get(
+        endpoints.GET_ITEMS_LATEST,
+        auth.tokenCheck,
+        async function getItemListEndpoint (req, res) {
+            logger.info(`GET_ITEMS_LATEST Request received`)
+            try {
+                const findResult = await ItemModel.find({}).sort({updatedAt:-1}).limit(10);
+                logger.info(`found: ${findResult.length} items`, req);
+                return res.status(200).send(findResult);
+            }
+            catch (err) {
+                return res.status(500).send(err);
+            }
+    })
+
     return router
 }
