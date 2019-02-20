@@ -16,8 +16,10 @@ export var ItemSchema: Schema = new Schema({
         required: true
     },
     slug: {
-        type: String,
-        required: true
+        type: Schema.Types.String,
+        required: true,
+        index: true,
+        unique: true
     },
     creator: {
         type: [ String ],

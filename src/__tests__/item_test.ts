@@ -63,8 +63,12 @@ describe('Item route |', () => {
     it('POST /item | creates new item in DB', async () => {
         const fixtureItem = {
           title: 'some title',
-          slug: 'some-title',
+
+    it('POST /item | rejects duplicate items', async () => {
+        const fixtureItem = {
+          title: 'some title',
           creator: ['author name', 'author2 name'],
+          added_by: '5tg7uj38iked8ik3e'
         }
 
         const testRoute = endpoints.POST_ITEM
@@ -73,11 +77,16 @@ describe('Item route |', () => {
         expect(res.status).toEqual(201)
 
         expect(res.body.title).toEqual(fixtureItem.title)
-        expect(res.body.slug).toEqual(fixtureItem.slug)
+        expect(res.body.slug).toEqual('some-title')
         expect(res.body.content).toEqual([])
         expect(res.body.children).toEqual([])
         expect(res.body.creator).toEqual(fixtureItem.creator)
         expect(res.body).toHaveProperty('createdAt')
+
+        const res2 = await request(app).post(testRoute).send(fixtureItem)
+
+        expect(res2.status).toEqual(400)
+        expect(res2.body.err).toEqual('An item with the address some-title already exists.')
     })
 
     it('POST /item/:slug | adds content to an item', async () => {
