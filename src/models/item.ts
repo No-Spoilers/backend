@@ -5,6 +5,10 @@ var RevisionSchema: Schema = new Schema({
     text: {
         type: String, 
         default: ""
+    },
+    added_by: {
+        type: Schema.Types.String,
+        required: true
     }
 }, {
     timestamps: true
@@ -32,6 +36,10 @@ export var ItemSchema: Schema = new Schema({
     children: {
         type: [ Schema.Types.ObjectId ], 
         required: false
+    },
+    added_by: {
+        type: Schema.Types.String,
+        required: true
     }
 }, {
     timestamps: true
@@ -39,9 +47,10 @@ export var ItemSchema: Schema = new Schema({
 
 const Revision = model<IRevision>("Revision", RevisionSchema)
 
-ItemSchema.statics.updateContent = function (slug: string, updateText: string) {
+ItemSchema.statics.updateContent = function (slug: string, updateText: string, addedBy: string) {
     const newRevision = new Revision()
     newRevision.text = updateText
+    newRevision.added_by = addedBy
     return ItemModel.findOneAndUpdate({slug}, {$push: {content: newRevision}}, { new: true })
 }
 

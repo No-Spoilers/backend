@@ -24,6 +24,7 @@ describe('Item route |', () => {
             "_id": "5bc97ad307840f75e5d77af9",
             "title": "My Title",
             "slug": "my-title",
+            "added_by": "45rtfg6yh8i9ol",
             "content": [],
             "createdAt": "2018-10-19T06:33:56.004Z",
             "updatedAt": "2018-10-19T06:33:56.004Z",
@@ -52,6 +53,7 @@ describe('Item route |', () => {
             "_id": "5bc97ad307840f75e5d77af9",
             "title": "My Title",
             "slug": "my-title",
+            "added_by": "45rtfg6yh8i9ol",
             "content": [],
             "createdAt": "2018-10-19T06:33:56.004Z",
             "updatedAt": "2018-10-19T06:33:56.004Z",
@@ -63,6 +65,23 @@ describe('Item route |', () => {
     it('POST /item | creates new item in DB', async () => {
         const fixtureItem = {
           title: 'some title',
+          creator: ['author name', 'author2 name'],
+          added_by: '5tg7uj38iked8ik3e'
+        }
+
+        const testRoute = endpoints.POST_ITEM
+        const res = await request(app).post(testRoute).send(fixtureItem)
+
+        expect(res.status).toEqual(201)
+
+        expect(res.body.title).toEqual(fixtureItem.title)
+        expect(res.body.slug).toEqual('some-title')
+        expect(res.body.added_by).toEqual('5tg7uj38iked8ik3e')
+        expect(res.body.content).toEqual([])
+        expect(res.body.children).toEqual([])
+        expect(res.body.creator).toEqual(fixtureItem.creator)
+        expect(res.body).toHaveProperty('createdAt')
+    })
 
     it('POST /item | rejects duplicate items', async () => {
         const fixtureItem = {
@@ -92,7 +111,8 @@ describe('Item route |', () => {
     it('POST /item/:slug | adds content to an item', async () => {
         const slug = 'my-title'
         const newContent = {
-          text: `Here's a line of content`
+            updateText: `Here's a line of content`,
+            addedBy: '5tg7uj38iked8ik3e'
         }
 
         const testRoute = endpoints.POST_CONTENT.replace(':slug', slug)
@@ -100,25 +120,27 @@ describe('Item route |', () => {
 
         expect(res.status).toEqual(201)
 
-        expect(res.body.content[0].text).toEqual(newContent.text)
+        expect(res.body.content[0].text).toEqual(newContent.updateText)
+        expect(res.body.content[0].added_by).toEqual(newContent.addedBy)
         expect(res.body.content[0]).toHaveProperty('_id')
         expect(res.body.content[0]).toHaveProperty('updatedAt')
         expect(res.body.content[0]).toHaveProperty('createdAt')
         
         const updatedContent = {
-            text: `Here's an updated line of content`
+            updateText: `Here's an updated line of content`,
+            addedBy: '5tg7uj38iked8ik3e'
         }
   
         res = await request(app).post(testRoute).send(updatedContent)
 
         expect(res.body.content.length).toEqual(2)
-        const firstResult = res.body.content.findIndex((item:IRevision) => item.text === newContent.text)
-        const secondResult = res.body.content.findIndex((item:IRevision) => item.text === updatedContent.text)
-        expect(res.body.content[firstResult].text).toEqual(newContent.text)
+        const firstResult = res.body.content.findIndex((item:IRevision) => item.text === newContent.updateText)
+        const secondResult = res.body.content.findIndex((item:IRevision) => item.text === updatedContent.updateText)
+        expect(res.body.content[firstResult].text).toEqual(newContent.updateText)
         expect(res.body.content[firstResult]).toHaveProperty('_id')
         expect(res.body.content[firstResult]).toHaveProperty('updatedAt')
         expect(res.body.content[firstResult]).toHaveProperty('createdAt')
-        expect(res.body.content[secondResult].text).toEqual(updatedContent.text)
+        expect(res.body.content[secondResult].text).toEqual(updatedContent.updateText)
         expect(res.body.content[secondResult]).toHaveProperty('_id')
         expect(res.body.content[secondResult]).toHaveProperty('updatedAt')
         expect(res.body.content[secondResult]).toHaveProperty('createdAt')

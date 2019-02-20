@@ -24,6 +24,7 @@ export const items = [
     "_id": "5bc97ad307840f75e5d77af9",
     "title": "My Title",
     "slug": "my-title",
+    "added_by": "45rtfg6yh8i9ol",
     "content": [],
     "creator": [
       "Creator One",

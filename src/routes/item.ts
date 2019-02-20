@@ -52,10 +52,10 @@ export default function setupItemRoutes (router: express.Router) {
         auth.tokenCheck,
         async function postItemEndpoint (req, res) {
             try {
-            logger.info(`POST_ITEM Request received | req.body: ${JSON.stringify(req.body)}`, req)
+                logger.info(`POST_ITEM Request received | req.body: ${JSON.stringify(req.body)}`, req)
                 
                 const newPost = req.body
-            newPost.slug = slug.create(req.body.title)
+                newPost.slug = slug.create(req.body.title)
                 
                 // Could not get mongoose to validate the unique slug, so must check manually
                 const dupeCheck = await ItemModel.find({ slug: newPost.slug });
@@ -80,7 +80,7 @@ export default function setupItemRoutes (router: express.Router) {
         async function postContentEndpoint (req, res) {
             logger.info(`POST_CONTENT Request received | req.body: ${JSON.stringify(req.body)}`, req)
             try {
-                const updatedItem = await ItemModel.updateContent(req.params.slug, req.body.text);
+                const updatedItem = await ItemModel.updateContent(req.params.slug, req.body.updateText, req.body.addedBy);
                 logger.info(`Update ItemModel result: ${JSON.stringify(updatedItem)}`);
                 return res.status(201).send(updatedItem);
             }
