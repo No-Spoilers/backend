@@ -16,7 +16,7 @@ var RevisionSchema: Schema = new Schema({
 
 export var ItemSchema: Schema = new Schema({
     title: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     slug: {
@@ -26,7 +26,7 @@ export var ItemSchema: Schema = new Schema({
         unique: true
     },
     creator: {
-        type: [ String ],
+        type: [ Schema.Types.String ],
         required: false
     },
     content: {

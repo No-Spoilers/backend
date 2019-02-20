@@ -5,9 +5,9 @@ import logger from './logger';
 function getTokenSecret () {
     if (process.env.NODE_ENV === 'test') return 'test-secret'
     if (process.env.TOKEN_SECRET) return process.env.TOKEN_SECRET
-    throw new Error('process.env.TOKEN_SECRET missing!')
+    throw new Error('Server does not have a TOKEN_SECRET for creating a hash!')
 }
-
+// for local testing use `export TOKEN_SECRET=localTokenSecret`
 function tokenCheck (req: Express.Request, res: Express.Response, next: Express.NextFunction) {
     req.token = {
         verified: false

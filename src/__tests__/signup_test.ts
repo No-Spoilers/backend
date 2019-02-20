@@ -51,7 +51,7 @@ describe('Signup route |', () => {
         const res = await request(app).post(endpoints.POST_SIGNUP).send(newUser)
     
         expect(res.status).toEqual(200)
-        expect(res.body.msg).toEqual("User name or email address already taken")
+        expect(res.body.msg).toEqual("That user name or email address has already been taken. Both User Name and email must be unique. If you've forgotten your password, you can recover it here: <> ")
         expect(res.body.success).toEqual(false)
     })
 })

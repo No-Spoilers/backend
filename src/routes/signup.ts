@@ -25,7 +25,7 @@ export default function setupRoutes (router: express.Router) {
 
                 const userFound = await UserModel.findOne({$or: [{email: newUser.email}, {userName: newUser.userName} ]})
                 if (userFound) {
-                    const msg = 'User name or email address already taken'
+                    const msg = "That user name or email address has already been taken. Both User Name and email must be unique. If you've forgotten your password, you can recover it here: <> "
                     const success = false
                     const logId = logger.info(msg)
                     return res.status(200).send({msg, success, logId})
@@ -34,7 +34,7 @@ export default function setupRoutes (router: express.Router) {
                 newUser.userId = uuidv4();
                 await UserModel.create(newUser);
 
-                const msg = `User "${newUser.userName}" created.`
+                const msg = `User "${newUser.userName}" created. Your account must be activated before you can log in. You will receive an activation email within a few minutes. Please follow the instructions in the activation email.`
                 const success = true
                 const logId = logger.info(msg)
                 return res.status(201).send({msg, success, logId})

@@ -10,7 +10,7 @@ function output(consoleFn: any, color: string, text: string, req?: Express.Reque
             text += ` | params: ${JSON.stringify(req.params)} | token: ${JSON.stringify(req.token)}`
         }
 
-        text += ` | logId: ${logId}`
+        text += ` | logId: ${logId}\n`
         consoleFn(color, text)
     }
 

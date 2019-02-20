@@ -23,7 +23,7 @@ export async function connectMongoose() {
         useNewUrlParser: true
     })
 }
-    
+
 export async function clearDatabase() {
     await mongoose.connection.db.dropDatabase()
 
